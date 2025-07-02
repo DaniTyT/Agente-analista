@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuronize - Industrial Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0A1929 0%, #1E3A5F 50%, #2E5984 100%);
+            min-height: 100vh;
+            color: #E3F2FD;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Neural network background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0, 191, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(41, 182, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(3, 169, 244, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+            background: rgba(10, 25, 41, 0.8);
+            padding: 30px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 188, 212, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #00BCD4;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 188, 212, 0.5);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #B3E5FC;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-weight: 400;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), rgba(41, 182, 246, 0.1));
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 188, 212, 0.2);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+            flex-grow: 1;
+            align-items: center;
+        }
+
+        .info-section {
+            background: linear-gradient(145deg, rgba(30, 58, 95, 0.9), rgba(46, 89, 132, 0.8));
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            animation: fadeInLeft 1s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00BCD4, transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .info-section h2 {
+            color: #00BCD4;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #29B6F6;
+            padding-bottom: 10px;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+        }
+
+        .info-section p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: rgba(227, 242, 253, 0.9);
+            font-weight: 300;
+        }
+
+        .info-section h3 {
+            color: #29B6F6;
+            margin: 20px 0 10px 0;
+            font-weight: 400;
+        }
+
+        .features {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .features li {
+            padding: 12px 0;
+            position: relative;
+            padding-left: 35px;
+            color: rgba(227, 242, 253, 0.9);
+            font-weight: 300;
+            transition: color 0.3s ease;
+        }
+
+        .features li::before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            top: 12px;
+            color: #00BCD4;
+            font-size: 1.2em;
+            animation: pulse 2s infinite;
+        }
+
+        .features li:hover {
+            color: #00BCD4;
+        }
+
+        .image-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInRight 1s ease-out 0.6s both;
+            position: relative;
+        }
+
+        .manufacturing-illustration {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 188, 212, 0.2);
+            border: 2px solid rgba(0, 188, 212, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .manufacturing-illustration:hover {
+            transform: scale(1.02);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 188, 212, 0.4);
+        }
+
+        .chatbot-container {
+            background: linear-gradient(145deg, rgba(30, 58, 95, 0.95), rgba(46, 89, 132, 0.9));
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+            animation: fadeInUp 1s ease-out 0.9s both;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chatbot-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 188, 212, 0.05), transparent);
+            animation: rotate 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .chatbot-container h3 {
+            color: #00BCD4;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: 300;
+            text-shadow: 0 0 15px rgba(0, 188, 212, 0.4);
+        }
+
+        .chatbot-container p {
+            color: rgba(227, 242, 253, 0.9);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .chatbot-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .connection-status {
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), rgba(41, 182, 246, 0.1));
+            border-left: 4px solid #00BCD4;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connection-status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 188, 212, 0.1), transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .connection-status p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #E3F2FD;
+            position: relative;
+            z-index: 1;
+        }
+
+        .connection-status strong {
+            color: #00BCD4;
+            text-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+        }
+
+        .loading-animation {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00BCD4, #29B6F6);
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 80%, 100% { 
+                transform: scale(0.8); 
+                opacity: 0.5; 
+                box-shadow: 0 0 5px rgba(0, 188, 212, 0.2);
+            }
+            40% { 
+                transform: scale(1.2); 
+                opacity: 1; 
+                box-shadow: 0 0 20px rgba(0, 188, 212, 0.6);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glowing accents */
+        .glow-accent {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.1), transparent);
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .glow-accent:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .glow-accent:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 0.6; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 20px 15px;
+                margin-bottom: 30px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+                padding: 12px 15px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .info-section {
+                padding: 20px;
+            }
+
+            .info-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .manufacturing-illustration {
+                max-width: 100%;
+            }
+
+            .chatbot-container {
+                padding: 20px;
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+                padding: 10px 12px;
+            }
+
+            .info-section {
+                padding: 15px;
+            }
+
+            .chatbot-container {
+                padding: 15px;
+                min-height: 280px;
+            }
+
+            .features li {
+                padding-left: 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-accent"></div>
+    <div class="glow-accent"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1>🤖 Neuronize - Industrial Intelligence Platform</h1>
+            <p>Neuronize is our industrial intelligence proposal to interconnect and enhance the value generated by company processes. We apply advanced digital architectures that leverage every asset in the plant through a universal connectivity strategy.</p>
+        </header>
+
+        <main class="main-content">
+            <div class="info-section">
+                <h2>About Neuronize Platform</h2>
+                <p>Neuronize is our industrial intelligence proposal to interconnect and enhance the value generated by company processes. We apply advanced digital architectures that leverage every asset in the plant through a universal connectivity strategy.</p>
+                
+                <p>Our platform transforms traditional manufacturing operations by creating intelligent connections between all industrial assets, enabling real-time data analysis and predictive insights to optimize production workflows.</p>
+
+                <h3>Platform Capabilities:</h3>
+                <ul class="features">
+                    <li>Enhance connected and digitized assets</li>
+                    <li>Provides intelligence to assets</li>
+                    <li>Allows you to create a neural network with assets</li>
+                    <li>Produce better, higher efficiency, lower cost</li>
+                    <li>Universal connectivity strategy implementation</li>
+                    <li>Advanced digital architecture deployment</li>
+                </ul>
+            </div>
+
+            <div class="image-section">
+                <img src="Image (10).jpg" alt="Sistema Industrial de Manufactura Inteligente" class="manufacturing-illustration">
+            </div>
+        </main>
+
+        <div class="chatbot-container" id="chatbot-container">
+            <div class="chatbot-info">
+                <h3>💬 Neuronize AI Assistant</h3>
+                <p>Your intelligent assistant for industrial data analysis is ready. Click the chat button to start the conversation and change the paradigm of your operations.</p>
+                <div class="connection-status">
+                    <p>
+                        <strong>🔗 Connected with Neuronize Platform</strong><br>
+                        The chatbot can help you with queries about operational data, performance analysis, and industrial process optimization through our universal connectivity strategy.
+                    </p>
+                </div>
+                <div class="loading-animation">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Botmaker Webchat Integration
+        (function () {
+            let js = document.createElement('script');
+            js.type = 'text/javascript';
+            js.async = 1;
+            js.src = 'https://go.botmaker.com/rest/webchat/p/ER6T188MWJ/init.js';
+            document.body.appendChild(js);
+        })();
+        
+        // Page initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página de Agente Virtual Kepware cargada exitosamente');
+            console.log('Botmaker Webchat inicializando...');
+            
+            // Add dynamic effects
+            const infoSection = document.querySelector('.info-section');
+            const chatbotContainer = document.querySelector('.chatbot-container');
+            
+            // Intersection Observer for scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            });
+            
+            if (infoSection) observer.observe(infoSection);
+            if (chatbotContainer) observer.observe(chatbotContainer);
+            
+            // Optional: Add custom styling to Botmaker widget when it loads
+            setTimeout(() => {
+                console.log('Chatbot Botmaker listo para interacción');
+                
+                // Try to style the Botmaker widget to match our theme
+                const botmakerStyles = `
+                    .botmaker-widget {
+                        border-radius: 20px !important;
+                        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+                        border: 1px solid rgba(0, 188, 212, 0.2) !important;
+                    }
+                `;
+                
+                const styleSheet = document.createElement('style');
+                styleSheet.textContent = botmakerStyles;
+                document.head.appendChild(styleSheet);
+            }, 3000);
+        });
+        
+        // Add particle effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.95) {
+                createParticle(e.clientX, e.clientY);
+            }
+        });
+        
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.width = '4px';
+            particle.style.height = '4px';
+            particle.style.background = '#00BCD4';
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '1000';
+            particle.style.boxShadow = '0 0 10px rgba(0, 188, 212, 0.6)';
+            
+            document.body.appendChild(particle);
+            
+            const animation = particle.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: 1000,
+                easing: 'ease-out'
+            });
+            
+            animation.onfinish = () => particle.remove();
+        }
+    </script>
+</body>
+</html>
